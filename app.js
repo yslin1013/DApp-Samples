@@ -7,7 +7,7 @@ const lessMiddleware = require('less-middleware');
 const logger = require('morgan');
 const fs = require('fs');
 const cors = require('cors');
-const debug = require('debug')('erc20-metamask-example:app');
+const debug = require('debug')('erc20-metamask-samples:app');
 const indexRouter = require('./routes/index');
 
 const app = express();
