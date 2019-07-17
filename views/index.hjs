@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800" rel="stylesheet" />
+  <link href="assets/default.css" rel="stylesheet" type="text/css" media="all" />
+  <link href="assets/fonts.css" rel="stylesheet" type="text/css" media="all" />
+  <title>Buy Tokens</title>
+</head>
+
+<body>
+  <div id="logo" class="container">
+    <h1><span class="icon icon-money icon-size"></span><a href="#">Buy<span>Tokens</span></a></h1>
+  </div>
+  <div id="wrapper" class="container">
+    <div id="menu" class="container">
+      <ul>
+        <li class="current_page_item"><a href="#" accesskey="1" title="">Homepage</a></li>
+        <li><a href="#" accesskey="1" title="">ERC20 Token Contract</a></li>
+        <li><a href="#" accesskey="2" title="">Read Contract</a></li>
+        <li><a href="#" accesskey="3" title="">Write Contract</a></li>
+        <li><a href="#" accesskey="4" title="">About Us</a></li>
+        <li><a href="#" accesskey="5" title="">Contact Us</a></li>
+      </ul>
+    </div>
+    <div id="three-column" class="container">
+      <div><span class="arrow-down"></span></div>
+      <div id="tbox1"> <span class="icon icon-wrench"></span>
+        <div class="title">
+          <h2>Set A</h2>
+        </div>
+        <p>Buy 100 Tokens</p>
+        <a href="#" class="button seta">Buy Tokens</a>
+      </div>
+      <div id="tbox2"> <span class="icon icon-cogs"></span>
+        <div class="title">
+          <h2>Set B</h2>
+        </div>
+        <p>Buy 500 Tokens</p>
+        <a href="#" class="button setb">Buy Tokens</a>
+      </div>
+      <div id="tbox3"> <span class="icon icon-legal"></span>
+        <div class="title">
+          <h2>Set C</h2>
+        </div>
+        <p>Buy 1000 Tokens</p>
+        <a href="#" class="button setc">Buy Tokens</a>
+      </div>
+      <div id="status"></div>
+    </div>
+  </div>
+  <div id="copyright">
+    <p>&copy; Buy Tokens. All rights reserved. | Design by <a href="http://templated.co"
+        rel="nofollow">TEMPLATED</a>.</p>
+  </div>
+</body>
+
+<script type="text/javascript">
+  window.addEventListener('load', async () => {
+    if (window.ethereum) {
+      window.web3 = new Web3(ethereum);
+      try {
+        await ethereum.enable();
+        initPayButton();
+      } catch (err) {
+        $('#status').html('User denied account access', err);
+      }
+    } else if (window.web3) {
+      window.web3 = new Web3(web3.currentProvider);
+      initPayButton();
+    } else {
+      $('#status').html('No Metamask (or other Web3 Provider) installed');
+    }
+  });
+  const initPayButton = () => {
+    const paymentAddress = '0xd79FCE3432a5E1f19699485eBD482C7Ff71D6176';
+    const abi = [{ "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_value", "type": "uint256" }], "name": "burn", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "buyTokens", "outputs": [{ "name": "success", "type": "bool" }], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_value", "type": "uint256" }], "name": "freeze", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_value", "type": "uint256" }], "name": "mint", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transfer", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_value", "type": "uint256" }], "name": "unfreeze", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "withdrawEther", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "name": "_initialAmount", "type": "uint256" }, { "name": "_tokenName", "type": "string" }, { "name": "_tokenSymbol", "type": "string" }, { "name": "_decimalUnits", "type": "uint8" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "payable": true, "stateMutability": "payable", "type": "fallback" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_from", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" }], "name": "Burn", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_from", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" }], "name": "Freeze", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_from", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" }], "name": "Unfreeze", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_previousOwner", "type": "address" }, { "indexed": true, "name": "_newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_from", "type": "address" }, { "indexed": true, "name": "_to", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_owner", "type": "address" }, { "indexed": true, "name": "_spender", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "constant": true, "inputs": [], "name": "_owner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "_owner", "type": "address" }, { "name": "_spender", "type": "address" }], "name": "allowance", "outputs": [{ "name": "remaining", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "_owner", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "amount", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "name": "", "type": "uint8" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "_owner", "type": "address" }], "name": "freezeOf", "outputs": [{ "name": "amount", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "isOwner", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "name", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }];
+    const MyContract = web3.eth.contract(abi).at(paymentAddress);
+    $('.seta').click(() => {
+      MyContract.buyTokens({
+        to: paymentAddress,
+        value: 10,
+        gas: 80000,
+        gasPrice: 40000000000
+      }, (err, transactionId) => {
+        if (err) {
+          console.log('TX failed', err);
+          $('#status').html('TX failed');
+        } else {
+          console.log('TX successful', transactionId);
+          $('#status').html('View on Etherscan: ' + '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '">' + transactionId + '</a>');
+        }
+      });
+    });
+    $('.setb').click(() => {
+      MyContract.buyTokens({
+        to: paymentAddress,
+        value: 50,
+        gas: 80000,
+        gasPrice: 40000000000
+      }, (err, transactionId) => {
+        if (err) {
+          console.log('TX failed', err);
+          $('#status').html('TX failed');
+        } else {
+          console.log('TX successful', transactionId);
+          $('#status').html('View on Etherscan: ' + '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '">' + transactionId + '</a>');
+        }
+      });
+    });
+    $('.setc').click(() => {
+      MyContract.buyTokens({
+        to: paymentAddress,
+        value: 100,
+        gas: 80000,
+        gasPrice: 40000000000
+      }, (err, transactionId) => {
+        if (err) {
+          console.log('TX failed', err);
+          $('#status').html('TX failed');
+        } else {
+          console.log('TX successful', transactionId);
+          $('#status').html('View on Etherscan: ' + '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '">' + transactionId + '</a>');
+        }
+      });
+    });
+  }
+
+  /*
+  web3.eth.sendTransaction({
+    to: paymentAddress,
+    value: web3.toWei(amountWei, 'ether'),
+    gas: 80000,
+    gasPrice: 20000000000
+  }, (err, transactionId) => {
+    if  (err) {
+      console.log('Payment failed', err)
+      $('#status').html('Payment failed')
+    } else {
+      console.log('Payment successful', transactionId)
+      $('#status').html('Payment successful')
+    }
+  })
+  */
+</script>
+
+</html>
