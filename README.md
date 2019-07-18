@@ -1,4 +1,4 @@
-# Sample Codes for Connecting ERC20 Token Contract with Metamask  
+# Sample Codes for DApp (Decentralized Application) Functions  
 
 ## Environment  
 ```
