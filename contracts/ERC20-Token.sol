@@ -2,7 +2,7 @@
   Implement ERC 20 Token standard: https://github.com/ethereum/EIPs/issues/20
 */
 
-pragma solidity ^0.5.10;
+pragma solidity ^0.4.25;
 
 /**
  * @dev Wrappers over Solidity's arithmetic operations with added overflow
@@ -115,7 +115,7 @@ library SafeMath {
  * the owner.
  */
 contract Ownable {
-    address payable public _owner;
+    address public _owner;
 
     event OwnershipTransferred(address indexed _previousOwner, address indexed _newOwner);
 
@@ -146,14 +146,14 @@ contract Ownable {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      * Can only be called by the current owner.
      */
-    function transferOwnership(address payable _newOwner) public onlyOwner {
+    function transferOwnership(address _newOwner) public onlyOwner {
         _transferOwnership(_newOwner);
     }
 
     /**
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      */
-    function _transferOwnership(address payable _newOwner) internal {
+    function _transferOwnership(address _newOwner) internal {
         require(_newOwner != address(0), "Ownable: new owner is zero address");
         emit OwnershipTransferred(_owner, _newOwner);
         _owner = _newOwner;
