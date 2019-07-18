@@ -1,4 +1,4 @@
-# Sample Codes for DApp (Decentralized Application) Functions  
+# Sample Codes for DApp Functions  
 
 ## Environment  
 ```
