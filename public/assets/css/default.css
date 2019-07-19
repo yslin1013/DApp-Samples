@@ -7,7 +7,7 @@
 	{
 		margin: 0px;
 		padding: 0px;
-		background: #E9E9E9 url(images/bg.png) repeat;
+		background: #E9E9E9 url(../images/bg.png) repeat;
 		font-family: 'Open Sans', sans-serif;
 		font-size: 11pt;
 		font-weight: 400;
@@ -447,7 +447,7 @@
 		overflow: hidden;
 		width: 1050px;
 		padding: 0em 75px 6em 75px;
-		background: #292929 url(images/bg.png) repeat;
+		background: #292929 url(../images/bg.png) repeat;
 	}
 	
 	#portfolio ul

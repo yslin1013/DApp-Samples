@@ -69,6 +69,14 @@ const buyTokenBtn = () => {
   });
 }
 
+let account = web3.eth.accounts[0];
+const accountInterval = setInterval(function() {
+  if (web3.eth.accounts[0] !== account) {
+    account = web3.eth.accounts[0];
+    location.reload();
+  }
+}, 100);
+
 function getBalance() {
   const ethAccount = web3.eth.accounts[0];
   web3.eth.getBalance(ethAccount, (err, result) => {
