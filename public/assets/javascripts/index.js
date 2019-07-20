@@ -17,7 +17,7 @@ window.addEventListener('load', async () => {
 
 const buyTokenBtn = () => {
   const contractAddress = '0xd79FCE3432a5E1f19699485eBD482C7Ff71D6176';
-  const abi = buyTokenAbi;
+  const abi = tokenAbi;
   const MyContract = web3.eth.contract(abi).at(contractAddress);
   $('.seta').click(() => {
     MyContract.buyTokens({
@@ -68,14 +68,6 @@ const buyTokenBtn = () => {
     });
   });
 }
-
-let account = web3.eth.accounts[0];
-const accountInterval = setInterval(function() {
-  if (web3.eth.accounts[0] !== account) {
-    account = web3.eth.accounts[0];
-    location.reload();
-  }
-}, 100);
 
 function getBalance() {
   const ethAccount = web3.eth.accounts[0];
@@ -184,3 +176,52 @@ function deployContract() {
     }
   });
 }
+
+// Scan for new account switching 
+let account = web3.eth.accounts[0];
+const accountInterval = setInterval(function() {
+  if (web3.eth.accounts[0] !== account) {
+    account = web3.eth.accounts[0];
+    location.reload();
+  }
+}, 100);
+
+
+// Countdown Timer
+const contractAddress = '0xa3e21c114b98b8b7d9a5ff9ab7e0ef0d59e7cb84';
+const abi = timerAbi;
+const MyContract = web3.eth.contract(abi).at(contractAddress);
+
+let distance, previous;
+const x = setInterval(function() {
+  MyContract.secondsRemaining((err, result) => {
+    if (err) {
+      console.log('Get remaining time failed', err);
+    } else {
+      const current = parseInt(result.toString());
+      if(previous !== current) {
+        previous = current;
+        distance = current;
+        document.getElementById("sync").innerHTML = "Synced !";
+      } else {
+        if (distance > 0) distance--;
+        document.getElementById("sync").innerHTML = "Sync with SC timestamp";
+      }
+    }
+  });
+
+  let days = Math.floor(distance / (60 * 60 * 24));
+  let hours = Math.floor((distance % (60 * 60 * 24)) / (60 * 60));
+  let minutes = Math.floor((distance % (60 * 60)) / 60);
+  let seconds = Math.floor(distance % 60);
+  if (isNaN(days) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
+    document.getElementById("timer").innerHTML = "Syncing ...";
+  } else {
+    if (hours >= 0 && hours < 10) hours = "0" + hours;
+    if (minutes >= 0 && minutes < 10) minutes = "0" + minutes;
+    if (seconds >= 0 && seconds < 10) seconds = "0" + seconds;
+    document.getElementById("timer").innerHTML = (days + ":" + hours + ":" + minutes + ":" + seconds);
+  }
+  if (distance < 0) clearInterval(x);
+
+}, 1000);

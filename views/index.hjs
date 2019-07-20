@@ -47,10 +47,10 @@
       </div>
       <div id="tbox3">
         <div class="title">
-          <h2>Purchase C</h2>
+          <h2>Countdown Timer</h2>
         </div>
-        <p>Buy 1000 Tokens</p>
-        <a href="#" class="button setc">Buy Tokens</a>
+        <p id="sync">Sync with SC timestamp</p>
+        <a class="button" id="timer"></a>
       </div>
     </div>
 
