@@ -248,7 +248,7 @@ contract CustomizedToken is StandardToken, Ownable {
     string public symbol;
     uint8 public decimals;
 
-    uint256 rate = 10;
+    uint256 rate = 1;
 
     constructor(
         uint256 _initialAmount,

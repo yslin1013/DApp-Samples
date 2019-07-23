@@ -3,69 +3,31 @@ window.addEventListener('load', async () => {
     window.web3 = new Web3(ethereum);
     try {
       await ethereum.enable();
-      buyTokenBtn();
     } catch (err) {
-      $('#status').html('User denied account access', err);
+      document.getElementById('status').innerHTML = 'User denied account access: ' + err;
     }
   } else if (window.web3) {
     window.web3 = new Web3(web3.currentProvider);
-    buyTokenBtn();
   } else {
-    $('#status').html('No Metamask (or other Web3 Provider) installed');
+    document.getElementById('status').innerHTML = 'No Metamask (or other Web3 Provider) installed';
   }
 });
 
-const buyTokenBtn = () => {
-  const contractAddress = '0xd79FCE3432a5E1f19699485eBD482C7Ff71D6176';
-  const abi = tokenAbi;
+function buyTokens() {
+  const contractAddress = '0xD0D6c01Eb198AB5F343f355F2DcBd58df3Ae360E';
+  const abi = contractAbi;
   const MyContract = web3.eth.contract(abi).at(contractAddress);
-  $('.seta').click(() => {
-    MyContract.buyTokens({
-      to: contractAddress,
-      value: 10,
-      gas: 80000,
-      gasPrice: 40000000000
-    }, (err, transactionId) => {
-      if (err) {
-        console.log('TX failed', err);
-        $('#status').html('TX failed');
-      } else {
-        console.log('TX successful', transactionId);
-        $('#status').html('TX successful: ' + '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '" target="_blank">' + transactionId + '</a>');
-      }
-    });
-  });
-  $('.setb').click(() => {
-    MyContract.buyTokens({
-      to: contractAddress,
-      value: 50,
-      gas: 80000,
-      gasPrice: 40000000000
-    }, (err, transactionId) => {
-      if (err) {
-        console.log('TX failed', err);
-        $('#status').html('TX failed');
-      } else {
-        console.log('TX successful', transactionId);
-        $('#status').html('TX successful: ' + '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '" target="_blank">' + transactionId + '</a>');
-      }
-    });
-  });
-  $('.setc').click(() => {
-    MyContract.buyTokens({
-      to: contractAddress,
-      value: 100,
-      gas: 80000,
-      gasPrice: 40000000000
-    }, (err, transactionId) => {
-      if (err) {
-        console.log('TX failed', err);
-        $('#status').html('TX failed');
-      } else {
-        console.log('TX successful', transactionId);
-        $('#status').html('TX successful: ' + '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '" target="_blank">' + transactionId + '</a>');
-      }
-    });
+  MyContract.buyTokens({
+    to: contractAddress,
+    value: document.getElementById('tokenAmount').value,
+    gas: 80000,
+    gasPrice: 40000000000
+  }, (err, transactionId) => {
+    if (err) {
+      document.getElementById('token').innerHTML = 'TX failed: ' + err;
+    } else {
+      document.getElementById('token').innerHTML = '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '" target="_blank">TX successful</a>';
+    }
   });
 }
 
@@ -73,7 +35,7 @@ function getBalance() {
   const ethAccount = web3.eth.accounts[0];
   web3.eth.getBalance(ethAccount, (err, result) => {
     if (err) {
-      console.log('Get balance error: ', err);
+      document.getElementById('account').innerHTML = 'Get balance error: ' + err;
     } else {
       const ethBalance = result.toString();
       const ethBalanceInEther = web3.fromWei(ethBalance, 'ether');
@@ -96,11 +58,9 @@ function donateAccount() {
     gasPrice: 20000000000
   }, (err, transactionId) => {
     if (err) {
-      console.log('Donation failed', err);
-      $('#donate').html('Donation failed');
+      document.getElementById('donate').innerHTML = 'Donation failed: ' + err;
     } else {
-      console.log('Donation successful', transactionId);
-      $('#donate').html('Donation successful');
+      document.getElementById('donate').innerHTML = 'Donation successful: ' + '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '" target="_blank">' + transactionId + '</a>';
     }
   });
 }
@@ -119,13 +79,11 @@ function cdContract() {
     const optimize = 1;
     const result = compiler.compile(source, optimize);
     if (Object.keys(result.contracts).length == 0) {
-      console.log('Compilation failed');
-      $('#complie').html('Compilation failed');
+      document.getElementById('compile').innerHTML = 'Compilation failed';
       return;
     }
     else {
-      console.log('Compilation completed');
-      $('#complie').html('Compilation completed');
+      document.getElementById('compile').innerHTML = 'Compilation completed';
     }
 
     const bytecode = result.contracts[':CustomizedToken'].bytecode;
@@ -138,15 +96,12 @@ function cdContract() {
       gasPrice: '6000000000'
     }, function (err, contract) {
       if (err) {
-        console.log('Deployment failed', err);
-        $('#deploy').html('Deployment failed');
+        document.getElementById('deploy').innerHTML = 'Deployment failed: ' + err;
       }
       if (contract.address) {
-        console.log("MyContract deployed at address: " + contract.address);
-        $('#deploy').html('Contract deployed: ' + '<a href="https://ropsten.etherscan.io/address/' + contract.address + '" target="_blank">' + contract.address + '</a>');
+        document.getElementById('deploy').innerHTML = 'Contract deployed: ' + '<a href="https://ropsten.etherscan.io/address/' + contract.address + '" target="_blank">' + contract.address + '</a>';
       } else {
-        console.log("MyContract is waiting to be mined at transaction hash: " + contract.transactionHash);
-        $('#deploy').html('Transaction sent: ' + '<a href="https://ropsten.etherscan.io/tx/' + contract.transactionHash + '" target="_blank">' + contract.transactionHash + '</a>');
+        document.getElementById('deploy').innerHTML = 'Transaction sent: ' + '<a href="https://ropsten.etherscan.io/tx/' + contract.transactionHash + '" target="_blank">' + contract.transactionHash + '</a>';
       }
     });
   }); 
@@ -156,7 +111,7 @@ function deployContract() {
   const bytecode = contractBytecode;
   const abi = contractAbi;
   const MyContract = web3.eth.contract(abi);
-  const myContractInstance = MyContract.new('2000000', 'ABC Token', 'ABC', '0',
+  const myContractInstance = MyContract.new('200000000', 'ZZZ Token', 'ZZZ', '2',
   {
     from: web3.eth.accounts[0],
     data: '0x' + bytecode,
@@ -164,15 +119,12 @@ function deployContract() {
     gasPrice: '6000000000'
   }, function (err, contract) {
     if (err) {
-      console.log('Deployment failed', err);
-      $('#deploy').html('Deployment failed');
+      document.getElementById('deploy').innerHTML = 'Deployment failed: ' + err;
     }
     if (contract.address) {
-      console.log("MyContract deployed at address: " + contract.address);
-      $('#deploy').html('Contract deployed: ' + '<a href="https://ropsten.etherscan.io/address/' + contract.address + '" target="_blank">' + contract.address + '</a>');
+      document.getElementById('deploy').innerHTML = 'Contract deployed: ' + '<a href="https://ropsten.etherscan.io/address/' + contract.address + '" target="_blank">' + contract.address + '</a>';
     } else {
-      console.log("MyContract is waiting to be mined at transaction hash: " + contract.transactionHash);
-      $('#deploy').html('Transaction sent: ' + '<a href="https://ropsten.etherscan.io/tx/' + contract.transactionHash + '" target="_blank">' + contract.transactionHash + '</a>');
+      document.getElementById('deploy').innerHTML = 'Transaction sent: ' + '<a href="https://ropsten.etherscan.io/tx/' + contract.transactionHash + '" target="_blank">' + contract.transactionHash + '</a>';
     }
   });
 }
@@ -196,7 +148,7 @@ let distance, previous;
 const x = setInterval(function() {
   MyContract.secondsRemaining((err, result) => {
     if (err) {
-      console.log('Get remaining time failed', err);
+      document.getElementById("sync").innerHTML = 'Get remaining time failed' + err;
     } else {
       const current = parseInt(result.toString());
       if(previous !== current) {
