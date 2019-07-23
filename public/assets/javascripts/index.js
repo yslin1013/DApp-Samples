@@ -3,15 +3,60 @@ window.addEventListener('load', async () => {
     window.web3 = new Web3(ethereum);
     try {
       await ethereum.enable();
+      loadInfo();
     } catch (err) {
       document.getElementById('status').innerHTML = 'User denied account access: ' + err;
     }
   } else if (window.web3) {
     window.web3 = new Web3(web3.currentProvider);
+    loadInfo();
   } else {
     document.getElementById('status').innerHTML = 'No Metamask (or other Web3 Provider) installed';
   }
 });
+
+function loadInfo() {
+  document.getElementById('coinbase').innerHTML = web3.eth.coinbase;
+  
+  web3.version.getNetwork(function(error, result) {
+    if(error) console.error(error);
+    else document.getElementById('network-id').innerHTML = result;
+  });
+
+  web3.net.getPeerCount(function(error, result) {
+    if(error) console.error(error);
+    else document.getElementById('peer-count').innerHTML = result;
+  });
+
+  web3.eth.getBlockNumber(function(error, result) {
+    if(error) console.error(error);
+    else document.getElementById('block-number').innerHTML = result;
+  });
+
+  web3.eth.filter('latest', function(error, result) {
+    if (error) console.error(error);
+    else {
+      web3.eth.getBlockNumber(function(error, result) {
+        if(error) console.error(error);
+        else document.getElementById('block-number').innerHTML = result;
+      });
+    }
+  });
+
+  web3.eth.getGasPrice(function(error, result) {
+    if(error) console.error(error);
+    else document.getElementById('gas-price').innerHTML = result.toString(10);
+  });
+
+  web3.version.getNode(function(error, result) {
+    if(error) console.error(error);
+    else {
+      document.getElementById('web3-verion').innerHTML = web3.version.api;
+      document.getElementById('provider').innerHTML = result;
+    }
+  });
+
+}
 
 function buyTokens() {
   const contractAddress = '0xD0D6c01Eb198AB5F343f355F2DcBd58df3Ae360E';
@@ -177,3 +222,5 @@ const x = setInterval(function() {
   if (distance < 0) clearInterval(x);
 
 }, 1000);
+
+// --------------------
