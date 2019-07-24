@@ -66,14 +66,15 @@ function setListeners() {
 // -----------------------------
 
 const signature = Cookies.get(web3.eth.coinbase);
-const expiration = Math.floor(new Date().getTime() / (60 * 60 * 24));
-const message = web3.fromUtf8("Login with Metamask @" + CryptoJS.SHA256(web3.eth.coinbase + expiration));
+const expiration = Math.floor(new Date().getTime() / (1000 * 60 * 60));
+const seedphrase = CryptoJS.SHA256(web3.eth.coinbase + expiration);
+const message = web3.fromUtf8("Login with Metamask @" + web3.eth.coinbase);
 let bIsLogin = checkUserLogin(signature, message);
 
 function userLogin() {
   if (checkUserLogout()) return;
   if (!bIsLogin) {
-    web3.personal.sign(message, web3.eth.coinbase, (error, signature) => {
+    web3.personal.sign(message, web3.eth.coinbase, seedphrase, (error, signature) => {
       if(error) {
         setUserLogin();
         console.error(error);
@@ -279,7 +280,7 @@ const x = setInterval(() => {
       if(previous !== current) {
         previous = current;
         distance = current;
-        document.getElementById("sync").innerHTML = "Synced !";
+        synchronizeTimer();
       } else {
         if (distance > 0) distance--;
         document.getElementById("sync").innerHTML = "Sync with SC timestamp";
@@ -292,7 +293,7 @@ const x = setInterval(() => {
   let minutes = Math.floor((distance % (60 * 60)) / 60);
   let seconds = Math.floor(distance % 60);
   if (isNaN(days) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-    document.getElementById("timer").innerHTML = "Syncing ...";
+    synchronizeTimer();
   } else {
     if (hours >= 0 && hours < 10) hours = "0" + hours;
     if (minutes >= 0 && minutes < 10) minutes = "0" + minutes;
@@ -301,3 +302,9 @@ const x = setInterval(() => {
   }
   if (distance < 0) clearInterval(x);
 }, 1000);
+
+function synchronizeTimer() {
+  setTimeout(() => {
+    document.getElementById("timer").innerHTML = "Syncing ...";
+  }, 2000);
+}

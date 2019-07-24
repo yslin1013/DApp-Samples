@@ -20,4 +20,11 @@ $ npm start
 http://localhost:3000  
 ```
 
+## Reference
+```
+https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial
+https://medium.com/metamask/7722797916a8
+https://ethereum.stackexchange.com/questions/25601
+```
+
 TODO

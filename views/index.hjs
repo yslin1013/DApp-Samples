@@ -59,8 +59,8 @@
         <div class="title">
           <h2>Countdown Timer</h2>
         </div>
-        <p class="byline" id="sync">Sync with SC timestamp</p>
-        <p class="button" id="timer"></p>
+        <span class="byline" id="sync">Sync with SC timestamp</span>
+        <p class="button" id="timer">Syncing ... </p>
       </div>
     </div>
 
