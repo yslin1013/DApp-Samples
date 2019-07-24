@@ -349,7 +349,6 @@ function generateRandomNumber() {
 }
 
 function waitForReceipt(txId) {
-  document.getElementById("number").innerHTML = "Waiting for receipt ...";
   const wait = setInterval(() => {
     web3.eth.getTransactionReceipt(txId, (error, receipt) => {
       if (error) {
@@ -358,12 +357,10 @@ function waitForReceipt(txId) {
         console.error(error);
       } else if (receipt) {
         clearInterval(wait);
-        setTimeout(() => {
-          getRandomNumber();
-          setRandomUnlock();
-        }, 10000);
+        setRandomUnlock();
+        document.getElementById('random').innerHTML = "Please wait until Metamask notification and then press the GET button";
       } else {
-        document.getElementById("number").innerHTML += "."; 
+        document.getElementById("generate-number").innerHTML += "."; 
       }
     });
   }, 2000);
@@ -377,16 +374,17 @@ function getRandomNumber() {
     } else {
       document.getElementById("number").innerHTML = result;
     }
-    document.getElementById('random').innerHTML = "";
   });
 }
 
 function setRandomLock() {
   document.getElementById("generate-number").disabled = true;
   document.getElementById("generate-number").innerHTML = "Generating ...";
+  document.getElementById("number").innerHTML = "#####";
 }
 
 function setRandomUnlock() {
   document.getElementById("generate-number").disabled = false;
   document.getElementById("generate-number").innerHTML = "Generate New One";
+  document.getElementById("number").innerHTML = "#####";
 }
