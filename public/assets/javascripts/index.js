@@ -67,7 +67,7 @@ function setListeners() {
 
 const signature = Cookies.get(web3.eth.coinbase);
 const expiration = Math.floor(new Date().getTime() / (1000 * 60 * 60));
-const seedphrase = CryptoJS.SHA256(web3.eth.coinbase + expiration);
+const seedphrase = web3.sha3(web3.eth.coinbase + expiration);
 const message = web3.fromUtf8("Login with Metamask @" + web3.eth.coinbase);
 let bIsLogin = checkUserLogin(signature, message);
 
