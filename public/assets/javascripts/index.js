@@ -61,7 +61,7 @@ function setListeners() {
   document.getElementById("donate-account").addEventListener("click", donateAccount);
   document.getElementById("cd-contract").addEventListener("click", cdContract);
   document.getElementById("deploy-contract").addEventListener("click", deployContract);
-  document.getElementById("get-number").addEventListener("click", getRandomNumber);
+  document.getElementById("generate-number").addEventListener("click", generateRandomNumber);
 }
 
 // -----------------------------
@@ -129,20 +129,19 @@ function setUserLogout() {
 }
 
 function buyTokens() {
-  const contractAddress = '0xD0D6c01Eb198AB5F343f355F2DcBd58df3Ae360E';
-  const abi = contractAbi;
-  const MyContract = web3.eth.contract(abi).at(contractAddress);
-  MyContract.buyTokens({
-    to: contractAddress,
+  const tokenAddress = '0xD0D6c01Eb198AB5F343f355F2DcBd58df3Ae360E';
+  const tokenContract = web3.eth.contract(contractAbi).at(tokenAddress);
+  tokenContract.buyTokens({
+    to: tokenAddress,
     value: document.getElementById('token-amount').value,
     gas: '80000',
     gasPrice: '20000000000'
   }, (error, transactionId) => {
     if (error) {
-      document.getElementById('token').innerHTML = 'TX failed';
+      document.getElementById('token').innerHTML = 'Transaction failed';
       console.error(error);
     } else {
-      const link = '<a href="' + etherscanTxURL + transactionId + '" target="_blank">TX successful</a>';
+      const link = '<a href="' + etherscanTxURL + transactionId + '" target="_blank">Transaction sent</a>';
       document.getElementById('token').innerHTML = link;
     }
   });
@@ -179,7 +178,7 @@ function donateAccount() {
       document.getElementById('donate').innerHTML = 'Donation failed';
       console.error(error);
     } else {
-      const link = '<a href="' + etherscanTxURL + transactionId + '" target="_blank">Donation successful</a>';
+      const link = '<a href="' + etherscanTxURL + transactionId + '" target="_blank">Donation sent</a>';
       document.getElementById('donate').innerHTML = link;
     }
   });
@@ -200,8 +199,8 @@ function cdContract() {
 
     const bytecode = result.contracts[':CustomizedToken'].bytecode;
     const abi = result.contracts[':CustomizedToken'].interface;
-    const MyContract = web3.eth.contract(JSON.parse(abi));
-    const myContractInstance = MyContract.new('1000000', 'ABC Token', 'ABC', '0', {
+    const cdContract = web3.eth.contract(JSON.parse(abi));
+    const cdContractInstance = cdContract.new('1000000', 'ABC Token', 'ABC', '0', {
       from: web3.eth.accounts[0],
       data: '0x' + bytecode,
       gas: '4700000',
@@ -215,7 +214,7 @@ function cdContract() {
           const link = '<a href="' + etherscanAddressURL  + contract.address + '" target="_blank">Contract deployed</a>';
           document.getElementById('deploy').innerHTML = link;
         } else {
-          const link = '<a href="' + etherscanTxURL + contract.transactionHash + '" target="_blank">Transaction successful</a>';
+          const link = '<a href="' + etherscanTxURL + contract.transactionHash + '" target="_blank">Transaction sent</a>';
           document.getElementById('deploy').innerHTML = link;
         } 
       }
@@ -225,9 +224,8 @@ function cdContract() {
 
 function deployContract() {
   const bytecode = contractBytecode;
-  const abi = contractAbi;
-  const MyContract = web3.eth.contract(abi);
-  const myContractInstance = MyContract.new('200000000', 'ZZZ Token', 'ZZZ', '2', {
+  const dContract = web3.eth.contract(contractAbi);
+  const dContractInstance = dContract.new('200000000', 'ZZZ Token', 'ZZZ', '2', {
     from: web3.eth.accounts[0],
     data: '0x' + bytecode,
     gas: '4700000',
@@ -241,7 +239,7 @@ function deployContract() {
         const link = '<a href="' + etherscanAddressURL  + contract.address + '" target="_blank">Contract deployed</a>';
         document.getElementById('deploy').innerHTML = link;
       } else {
-        const link = '<a href="' + etherscanTxURL + contract.transactionHash + '" target="_blank">Transaction successful</a>';
+        const link = '<a href="' + etherscanTxURL + contract.transactionHash + '" target="_blank">Transaction sent</a>';
         document.getElementById('deploy').innerHTML = link;
       }
     }
@@ -268,14 +266,14 @@ const accountInterval = setInterval(() => {
 
 
 // Countdown Timer
-const contractAddress = '0xa3e21c114b98b8b7d9a5ff9ab7e0ef0d59e7cb84';
-const abi = timerAbi;
-const MyContract = web3.eth.contract(abi).at(contractAddress);
+const timerAddress = '0xa3e21c114b98b8b7d9a5ff9ab7e0ef0d59e7cb84';
+const timerContract = web3.eth.contract(timerAbi).at(timerAddress);
 let distance, previous;
-const x = setInterval(() => {
-  MyContract.secondsRemaining((error, result) => {
+const timer = setInterval(() => {
+  timerContract.secondsRemaining((error, result) => {
     if (error) {
-      document.getElementById("sync").innerHTML = 'Get remaining time failed' + error;
+      document.getElementById("sync").innerHTML = 'Get remaining time failed';
+      console.error(error);
     } else {
       const current = parseInt(result.toString());
       if(previous !== current) {
@@ -301,7 +299,7 @@ const x = setInterval(() => {
     if (seconds >= 0 && seconds < 10) seconds = "0" + seconds;
     document.getElementById("timer").innerHTML = (days + ":" + hours + ":" + minutes + ":" + seconds);
   }
-  if (distance < 0) clearInterval(x);
+  if (distance < 0) clearInterval(timer);
 }, 1000);
 
 function synchronizeTimer() {
@@ -312,10 +310,80 @@ function synchronizeTimer() {
 
 // -------------------------
 
-function getRandomNumber() {
+// Random number generator 
+const randomAddress = '0xabc98a6ead06fd3c0ebe0590b88e0a16f8d2dd6a';
+const randomContract = web3.eth.contract(randomAbi).at(randomAddress);
+
+function generateRandomNumber() {
+  setRandomLock();
+  const array = new Uint32Array(10);
+  window.crypto.getRandomValues(array);
+  let number = 0;
+  for (let i=0; i<array.length; i++) {
+    number += array[i];
+  }
+  if (!document.getElementById('nonce').value) {
+    document.getElementById('nonce').value = array[array.length-1];
+  }
   const nonce = document.getElementById('nonce').value;
-  const hash = web3.sha3(nonce + web3.eth.coinbase + new Date().getTime());
-  const number = web3.toBigNumber(hash).toString(10);
-  console.log(nonce, hash, number);
-  // TO DO
+  number += new Date().getTime() % nonce;
+
+  const input = number % 256;
+  randomContract.random(input, {
+    to: randomAddress,
+    gas: '80000',
+    gasPrice: '20000000000'
+  }, (error, transactionId) => {
+    if (error) {
+      document.getElementById('random').innerHTML = 'Get random number failed';
+      setRandomUnlock();
+      console.error(error);
+    } else {
+      const link = '<a href="' + etherscanTxURL + transactionId + '" target="_blank">Transaction sent</a>';
+      document.getElementById('random').innerHTML = link;
+      waitForReceipt(transactionId);
+    }
+  });
+  
+}
+
+function waitForReceipt(txId) {
+  document.getElementById("number").innerHTML = "Waiting for receipt ...";
+  const wait = setInterval(() => {
+    web3.eth.getTransactionReceipt(txId, (error, receipt) => {
+      if (error) {
+        clearInterval(wait);
+        setRandomUnlock();
+        console.error(error);
+      } else if (receipt) {
+        clearInterval(wait);
+        getRandomNumber();
+      } else {
+        document.getElementById("number").innerHTML += "."; 
+      }
+    });
+  }, 2000);
+}
+
+function getRandomNumber() {
+  randomContract.getNumber((error, result) => {
+    if (error) {
+      document.getElementById("random").innerHTML = 'Get random number failed';
+      console.error(error);
+    } else {
+      document.getElementById("number").innerHTML = result;
+    }
+    setRandomUnlock();
+    document.getElementById('random').innerHTML = "";
+  });
+}
+
+function setRandomLock() {
+  document.getElementById("generate-number").disabled = true;
+  document.getElementById("generate-number").innerHTML = "Generating ...";
+}
+
+function setRandomUnlock() {
+  document.getElementById("generate-number").disabled = false;
+  document.getElementById("generate-number").innerHTML = "Generate a Number";
 }

@@ -90,9 +90,10 @@
       <div id="box1">
         <div class="title">
           <h2>Decentralized Random Number Generator</h2>
-          <p class="byline">Enter a nonce > <input type="text" id="nonce" style="width: 80px;"> < and click the button</p>
+          <p class="byline">Enter a nonce > <input type="text" id="nonce" style="width: 100px;"> < and click the button</p>
           <h1 id="number">#####</h1>
-          <button class="button" id="get-number">Get a Number</button>
+          <button class="button" id="generate-number">Generate a Number</button>
+          <p class="byline" id="random"></p>
         </div>
       </div>
     </div>
