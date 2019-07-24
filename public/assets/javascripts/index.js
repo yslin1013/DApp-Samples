@@ -61,6 +61,7 @@ function setListeners() {
   document.getElementById("donate-account").addEventListener("click", donateAccount);
   document.getElementById("cd-contract").addEventListener("click", cdContract);
   document.getElementById("deploy-contract").addEventListener("click", deployContract);
+  document.getElementById("get-number").addEventListener("click", getRandomNumber);
 }
 
 // -----------------------------
@@ -307,4 +308,14 @@ function synchronizeTimer() {
   setTimeout(() => {
     document.getElementById("timer").innerHTML = "Syncing ...";
   }, 2000);
+}
+
+// -------------------------
+
+function getRandomNumber() {
+  const nonce = document.getElementById('nonce').value;
+  const hash = web3.sha3(nonce + web3.eth.coinbase + new Date().getTime());
+  const number = web3.toBigNumber(hash).toString(10);
+  console.log(nonce, hash, number);
+  // TO DO
 }

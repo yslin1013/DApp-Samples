@@ -25,6 +25,7 @@ http://localhost:3000
 https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial
 https://medium.com/metamask/7722797916a8
 https://ethereum.stackexchange.com/questions/25601
+https://ethereum.stackexchange.com/questions/191/
 ```
 
 TODO
