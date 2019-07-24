@@ -28,7 +28,7 @@
         <li><a href="#" accesskey="2" title="">Read Contract</a></li>
         <li><a href="#" accesskey="3" title="">Write Contract</a></li>
         <li><a href="#" accesskey="4" title="">About Us</a></li>
-        <li><a href="#" accesskey="5" title="">Contact Us</a></li>
+        <li><a href="#" id="user-login" title="Login with Metamask">Login (Metamask)</a></li>
       </ul>
     </div>
     <div id="three-column" class="container">
@@ -45,21 +45,20 @@
         <br />
       </div>
 
-
       <div id="tbox2">
         <div class="title">
           <h2>Purchase</h2>
         </div>
         <p id="token"></p>
-        <input type="text" id="tokenAmount" placeholder="Token Amount">
-        <a href="#" class="button seta" onclick="buyTokens();">Buy Tokens</a>
+        <input type="text" id="token-amount" placeholder="Enter token amount">
+        <button class="button" id="buy-tokens">Buy Tokens</button>
       </div>
       <div id="tbox2">
         <div class="title">
           <h2>Countdown Timer</h2>
         </div>
-        <p id="sync">Sync with SC timestamp</p>
-        <a class="button" id="timer"></a>
+        <p class="byline" id="sync">Sync with SC timestamp</p>
+        <button class="button" id="timer"></button>
       </div>
     </div>
 
@@ -70,8 +69,8 @@
           <p class="byline">Check Balance and Donate</p>
           <p class="byline" id="account"></p>
           <p class="byline" id="donate"></p>
-          <button class="button" onclick="getBalance();">Balance</button>
-          <button class="button" onclick="donateAccount();">Donate</button>
+          <button class="button" id="get-balance">Balance</button>
+          <button class="button" id="donate-account">Donate</button>
         </div>
       </div>
       <div id="box2">
@@ -80,8 +79,8 @@
           <p class="byline">Compile and Deploy Contract</p>
           <p class="byline" id="compile"></p>
           <p class="byline" id="deploy"></p>
-          <button class="button" onclick="cdContract();">Compile+Deploy</button>
-          <button class="button" onclick="deployContract();">Deploy</button>
+          <button class="button" id="cd-contract">Compile+Deploy</button>
+          <button class="button" id="deploy-contract">Deploy</button>
         </div>
       </div>
     </div>

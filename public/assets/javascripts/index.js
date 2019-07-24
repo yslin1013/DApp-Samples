@@ -3,59 +3,73 @@ window.addEventListener('load', async () => {
     window.web3 = new Web3(ethereum);
     try {
       await ethereum.enable();
-      loadInfo();
+      loadInformations();
+      setListeners();
     } catch (err) {
       document.getElementById('status').innerHTML = 'User denied account access: ' + err;
     }
   } else if (window.web3) {
     window.web3 = new Web3(web3.currentProvider);
-    loadInfo();
+    loadInformations();
+    setListeners();
   } else {
     document.getElementById('status').innerHTML = 'No Metamask (or other Web3 Provider) installed';
   }
 });
 
-function loadInfo() {
+function loadInformations() {
   document.getElementById('coinbase').innerHTML = web3.eth.coinbase;
   
-  web3.version.getNetwork(function(error, result) {
+  web3.version.getNetwork((error, result) => {
     if(error) console.error(error);
     else document.getElementById('network-id').innerHTML = result;
   });
 
-  web3.net.getPeerCount(function(error, result) {
+  web3.net.getPeerCount((error, result) => {
     if(error) console.error(error);
     else document.getElementById('peer-count').innerHTML = result;
   });
 
-  web3.eth.getBlockNumber(function(error, result) {
+  web3.eth.getBlockNumber((error, result) => {
     if(error) console.error(error);
     else document.getElementById('block-number').innerHTML = result;
   });
 
-  web3.eth.filter('latest', function(error, result) {
+  web3.eth.filter('latest', (error, result) => {
     if (error) console.error(error);
     else {
-      web3.eth.getBlockNumber(function(error, result) {
+      web3.eth.getBlockNumber((error, result) => {
         if(error) console.error(error);
         else document.getElementById('block-number').innerHTML = result;
       });
     }
   });
 
-  web3.eth.getGasPrice(function(error, result) {
+  web3.eth.getGasPrice((error, result) => {
     if(error) console.error(error);
     else document.getElementById('gas-price').innerHTML = result.toString(10);
   });
 
-  web3.version.getNode(function(error, result) {
+  web3.version.getNode((error, result) => {
     if(error) console.error(error);
     else {
       document.getElementById('web3-verion').innerHTML = web3.version.api;
       document.getElementById('provider').innerHTML = result;
     }
   });
+}
 
+function setListeners() {
+  document.getElementById("user-login").addEventListener("click", userLogin);
+  document.getElementById("buy-tokens").addEventListener("click", buyTokens);
+  document.getElementById("get-balance").addEventListener("click", getBalance);
+  document.getElementById("donate-account").addEventListener("click", donateAccount);
+  document.getElementById("cd-contract").addEventListener("click", cdContract);
+  document.getElementById("deploy-contract").addEventListener("click", deployContract);
+}
+
+function userLogin() {
+  // TO DO
 }
 
 function buyTokens() {
@@ -64,7 +78,7 @@ function buyTokens() {
   const MyContract = web3.eth.contract(abi).at(contractAddress);
   MyContract.buyTokens({
     to: contractAddress,
-    value: document.getElementById('tokenAmount').value,
+    value: document.getElementById('token-amount').value,
     gas: 80000,
     gasPrice: 40000000000
   }, (err, transactionId) => {
@@ -110,16 +124,9 @@ function donateAccount() {
   });
 }
 
-function getSolcVersion() {
-  BrowserSolc.getVersions(function (soljsonSources, soljsonReleases) {
-    console.log(soljsonSources);
-    console.log(soljsonReleases);
-  });
-}
-
 function cdContract() {
   // issue: soljson-v0.5.10+commit.5a6ea5b1.js
-  BrowserSolc.loadVersion("soljson-v0.4.25+commit.59dbf8f1.js", function (compiler) {
+  BrowserSolc.loadVersion("soljson-v0.4.25+commit.59dbf8f1.js", (compiler) => {
     const source = ERC20tokenContract;
     const optimize = 1;
     const result = compiler.compile(source, optimize);
@@ -139,7 +146,7 @@ function cdContract() {
       data: '0x' + bytecode,
       gas: '4700000',
       gasPrice: '6000000000'
-    }, function (err, contract) {
+    }, (err, contract) => {
       if (err) {
         document.getElementById('deploy').innerHTML = 'Deployment failed: ' + err;
       }
@@ -162,7 +169,7 @@ function deployContract() {
     data: '0x' + bytecode,
     gas: '4700000',
     gasPrice: '6000000000'
-  }, function (err, contract) {
+  }, (err, contract) => {
     if (err) {
       document.getElementById('deploy').innerHTML = 'Deployment failed: ' + err;
     }
@@ -174,15 +181,23 @@ function deployContract() {
   });
 }
 
+function getSolcVersion() {
+  BrowserSolc.getVersions((soljsonSources, soljsonReleases) => {
+    console.log(soljsonSources);
+    console.log(soljsonReleases);
+  });
+}
+
+// -------------------------------------------------
+
 // Scan for new account switching 
 let account = web3.eth.accounts[0];
-const accountInterval = setInterval(function() {
+const accountInterval = setInterval(() => {
   if (web3.eth.accounts[0] !== account) {
     account = web3.eth.accounts[0];
     location.reload();
   }
 }, 100);
-
 
 // Countdown Timer
 const contractAddress = '0xa3e21c114b98b8b7d9a5ff9ab7e0ef0d59e7cb84';
@@ -190,7 +205,7 @@ const abi = timerAbi;
 const MyContract = web3.eth.contract(abi).at(contractAddress);
 
 let distance, previous;
-const x = setInterval(function() {
+const x = setInterval(() => {
   MyContract.secondsRemaining((err, result) => {
     if (err) {
       document.getElementById("sync").innerHTML = 'Get remaining time failed' + err;
@@ -222,5 +237,3 @@ const x = setInterval(function() {
   if (distance < 0) clearInterval(x);
 
 }, 1000);
-
-// --------------------
