@@ -357,7 +357,9 @@ function waitForReceipt(txId) {
         console.error(error);
       } else if (receipt) {
         clearInterval(wait);
-        getRandomNumber();
+        setTimeout(() => {
+          getRandomNumber();
+        }, 5000);
       } else {
         document.getElementById("number").innerHTML += "."; 
       }
