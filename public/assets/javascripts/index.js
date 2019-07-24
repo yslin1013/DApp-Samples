@@ -1,8 +1,3 @@
-const signature = Cookies.get(web3.eth.coinbase);
-const expiration = Math.floor(new Date().getTime() / (60 * 60 * 24));
-const message = web3.fromUtf8("Login with Metamask @" + CryptoJS.SHA256(web3.eth.coinbase + expiration));
-let bIsLogin = checkUserLogin(signature, message);
-
 window.addEventListener('load', async () => {
   if (window.ethereum) {
     window.web3 = new Web3(ethereum);
@@ -25,22 +20,18 @@ window.addEventListener('load', async () => {
 
 function loadInformations() {
   document.getElementById('coinbase').innerHTML = web3.eth.coinbase;
-  
   web3.version.getNetwork((error, result) => {
     if(error) console.error(error);
     else document.getElementById('network-id').innerHTML = result;
   });
-
   web3.net.getPeerCount((error, result) => {
     if(error) console.error(error);
     else document.getElementById('peer-count').innerHTML = result;
   });
-
   web3.eth.getBlockNumber((error, result) => {
     if(error) console.error(error);
     else document.getElementById('block-number').innerHTML = result;
   });
-
   web3.eth.filter('latest', (error, result) => {
     if (error) console.error(error);
     else {
@@ -50,12 +41,10 @@ function loadInformations() {
       });
     }
   });
-
   web3.eth.getGasPrice((error, result) => {
     if(error) console.error(error);
     else document.getElementById('gas-price').innerHTML = result.toString(10);
   });
-
   web3.version.getNode((error, result) => {
     if(error) console.error(error);
     else {
@@ -74,11 +63,15 @@ function setListeners() {
   document.getElementById("deploy-contract").addEventListener("click", deployContract);
 }
 
-function userLogin() {
-  // check whether the action is logging out
-  if(checkUserLogout()) return;
+// -----------------------------
 
-  // run login process if the account does not logged in yet
+const signature = Cookies.get(web3.eth.coinbase);
+const expiration = Math.floor(new Date().getTime() / (60 * 60 * 24));
+const message = web3.fromUtf8("Login with Metamask @" + CryptoJS.SHA256(web3.eth.coinbase + expiration));
+let bIsLogin = checkUserLogin(signature, message);
+
+function userLogin() {
+  if (checkUserLogout()) return;
   if (!bIsLogin) {
     web3.personal.sign(message, web3.eth.coinbase, (error, signature) => {
       if(error) {
@@ -232,8 +225,7 @@ function deployContract() {
   const bytecode = contractBytecode;
   const abi = contractAbi;
   const MyContract = web3.eth.contract(abi);
-  const myContractInstance = MyContract.new('200000000', 'ZZZ Token', 'ZZZ', '2',
-  {
+  const myContractInstance = MyContract.new('200000000', 'ZZZ Token', 'ZZZ', '2', {
     from: web3.eth.accounts[0],
     data: '0x' + bytecode,
     gas: '4700000',
@@ -263,7 +255,7 @@ function getSolcVersion() {
 
 // -------------------------------------------------
 
-// Scan for new account switching 
+// Scan for account switching 
 let account = web3.eth.accounts[0];
 const accountInterval = setInterval(() => {
   if (web3.eth.accounts[0] !== account) {
@@ -272,11 +264,11 @@ const accountInterval = setInterval(() => {
   }
 }, 100);
 
+
 // Countdown Timer
 const contractAddress = '0xa3e21c114b98b8b7d9a5ff9ab7e0ef0d59e7cb84';
 const abi = timerAbi;
 const MyContract = web3.eth.contract(abi).at(contractAddress);
-
 let distance, previous;
 const x = setInterval(() => {
   MyContract.secondsRemaining((error, result) => {
@@ -308,5 +300,4 @@ const x = setInterval(() => {
     document.getElementById("timer").innerHTML = (days + ":" + hours + ":" + minutes + ":" + seconds);
   }
   if (distance < 0) clearInterval(x);
-
 }, 1000);
