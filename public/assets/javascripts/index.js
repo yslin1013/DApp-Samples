@@ -359,7 +359,7 @@ function waitForReceipt(txId) {
         clearInterval(wait);
         setTimeout(() => {
           getRandomNumber();
-        }, 5000);
+        }, 10000);
       } else {
         document.getElementById("number").innerHTML += "."; 
       }
