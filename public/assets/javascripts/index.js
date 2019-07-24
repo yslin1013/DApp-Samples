@@ -1,3 +1,8 @@
+const signature = Cookies.get(web3.eth.coinbase);
+const expiration = Math.floor(new Date().getTime() / (60 * 60 * 24));
+const message = web3.fromUtf8("Login with Metamask @" + CryptoJS.SHA256(web3.eth.coinbase + expiration));
+let bIsLogin = checkUserLogin(signature, message);
+
 window.addEventListener('load', async () => {
   if (window.ethereum) {
     window.web3 = new Web3(ethereum);
@@ -5,8 +10,9 @@ window.addEventListener('load', async () => {
       await ethereum.enable();
       loadInformations();
       setListeners();
-    } catch (err) {
-      document.getElementById('status').innerHTML = 'User denied account access: ' + err;
+    } catch (error) {      
+      document.getElementById('status').innerHTML = 'User denied account access';
+      console.error(error);
     }
   } else if (window.web3) {
     window.web3 = new Web3(web3.currentProvider);
@@ -69,7 +75,62 @@ function setListeners() {
 }
 
 function userLogin() {
-  // TO DO
+  // check whether the action is logging out
+  if(checkUserLogout()) return;
+
+  // run login process if the account does not logged in yet
+  if (!bIsLogin) {
+    web3.personal.sign(message, web3.eth.coinbase, (error, signature) => {
+      if(error) {
+        setUserLogin();
+        console.error(error);
+      }
+      else {
+        Cookies.set(web3.eth.coinbase, signature, { expires: 1 });
+        setUserLogout();
+        alert("Login successful");
+      }
+    });
+  }
+}
+
+function checkUserLogin(signature, message) {
+  if(signature !== undefined) {
+    web3.personal.ecRecover(message, signature, (error, address) => {
+      if (error) {
+        setUserLogin();
+        console.error(error);
+        return false;
+      } else {
+        if(address === web3.eth.coinbase) {
+          setUserLogout();
+          console.log(signature);
+          return true;
+        } else return false;
+      }
+    });
+  } else return false;
+}
+
+function checkUserLogout() {
+  let status = document.getElementById('user-login').innerHTML;
+  let title = document.getElementById('user-login').title;
+  if (status === "Logout (Metamask)" || title === "Logout with Metamask") {
+    setUserLogin();
+    alert("Logout successful");
+    return true;
+  } else return false;
+}
+
+function setUserLogin() {
+  Cookies.remove(web3.eth.coinbase);
+  document.getElementById('user-login').innerHTML = "Login (Metamask)";
+  document.getElementById('user-login').title = "Login with Metamask";
+}
+
+function setUserLogout() {
+  document.getElementById('user-login').innerHTML = "Logout (Metamask)";
+  document.getElementById('user-login').title = "Logout with Metamask";
 }
 
 function buyTokens() {
@@ -79,22 +140,25 @@ function buyTokens() {
   MyContract.buyTokens({
     to: contractAddress,
     value: document.getElementById('token-amount').value,
-    gas: 80000,
-    gasPrice: 40000000000
-  }, (err, transactionId) => {
-    if (err) {
-      document.getElementById('token').innerHTML = 'TX failed: ' + err;
+    gas: '80000',
+    gasPrice: '20000000000'
+  }, (error, transactionId) => {
+    if (error) {
+      document.getElementById('token').innerHTML = 'TX failed';
+      console.error(error);
     } else {
-      document.getElementById('token').innerHTML = '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '" target="_blank">TX successful</a>';
+      const link = '<a href="' + etherscanTxURL + transactionId + '" target="_blank">TX successful</a>';
+      document.getElementById('token').innerHTML = link;
     }
   });
 }
 
 function getBalance() {
   const ethAccount = web3.eth.accounts[0];
-  web3.eth.getBalance(ethAccount, (err, result) => {
-    if (err) {
-      document.getElementById('account').innerHTML = 'Get balance error: ' + err;
+  web3.eth.getBalance(ethAccount, (error, result) => {
+    if (error) {
+      document.getElementById('account').innerHTML = 'Get balance error';
+      console.error(error);
     } else {
       const ethBalance = result.toString();
       const ethBalanceInEther = web3.fromWei(ethBalance, 'ether');
@@ -113,13 +177,15 @@ function donateAccount() {
     from: srcAccount,
     to: destAccount,
     value: web3.toWei(amountEther, 'ether'),
-    gas: 80000,
-    gasPrice: 20000000000
-  }, (err, transactionId) => {
-    if (err) {
-      document.getElementById('donate').innerHTML = 'Donation failed: ' + err;
+    gas: '80000',
+    gasPrice: '20000000000'
+  }, (error, transactionId) => {
+    if (error) {
+      document.getElementById('donate').innerHTML = 'Donation failed';
+      console.error(error);
     } else {
-      document.getElementById('donate').innerHTML = 'Donation successful: ' + '<a href="https://ropsten.etherscan.io/tx/' + transactionId + '" target="_blank">' + transactionId + '</a>';
+      const link = '<a href="' + etherscanTxURL + transactionId + '" target="_blank">Donation successful</a>';
+      document.getElementById('donate').innerHTML = link;
     }
   });
 }
@@ -133,8 +199,7 @@ function cdContract() {
     if (Object.keys(result.contracts).length == 0) {
       document.getElementById('compile').innerHTML = 'Compilation failed';
       return;
-    }
-    else {
+    } else {
       document.getElementById('compile').innerHTML = 'Compilation completed';
     }
 
@@ -145,15 +210,19 @@ function cdContract() {
       from: web3.eth.accounts[0],
       data: '0x' + bytecode,
       gas: '4700000',
-      gasPrice: '6000000000'
-    }, (err, contract) => {
-      if (err) {
-        document.getElementById('deploy').innerHTML = 'Deployment failed: ' + err;
-      }
-      if (contract.address) {
-        document.getElementById('deploy').innerHTML = 'Contract deployed: ' + '<a href="https://ropsten.etherscan.io/address/' + contract.address + '" target="_blank">' + contract.address + '</a>';
+      gasPrice: '8000000000'
+    }, (error, contract) => {
+      if (error) {
+        document.getElementById('deploy').innerHTML = 'Deployment failed';
+        console.error(error);
       } else {
-        document.getElementById('deploy').innerHTML = 'Transaction sent: ' + '<a href="https://ropsten.etherscan.io/tx/' + contract.transactionHash + '" target="_blank">' + contract.transactionHash + '</a>';
+        if (contract.address) {
+          const link = '<a href="' + etherscanAddressURL  + contract.address + '" target="_blank">Contract deployed</a>';
+          document.getElementById('deploy').innerHTML = link;
+        } else {
+          const link = '<a href="' + etherscanTxURL + contract.transactionHash + '" target="_blank">Transaction successful</a>';
+          document.getElementById('deploy').innerHTML = link;
+        } 
       }
     });
   }); 
@@ -168,15 +237,19 @@ function deployContract() {
     from: web3.eth.accounts[0],
     data: '0x' + bytecode,
     gas: '4700000',
-    gasPrice: '6000000000'
-  }, (err, contract) => {
-    if (err) {
-      document.getElementById('deploy').innerHTML = 'Deployment failed: ' + err;
-    }
-    if (contract.address) {
-      document.getElementById('deploy').innerHTML = 'Contract deployed: ' + '<a href="https://ropsten.etherscan.io/address/' + contract.address + '" target="_blank">' + contract.address + '</a>';
+    gasPrice: '8000000000'
+  }, (error, contract) => {
+    if (error) {
+      document.getElementById('deploy').innerHTML = 'Deployment failed';
+      console.error(error);
     } else {
-      document.getElementById('deploy').innerHTML = 'Transaction sent: ' + '<a href="https://ropsten.etherscan.io/tx/' + contract.transactionHash + '" target="_blank">' + contract.transactionHash + '</a>';
+      if (contract.address) {
+        const link = '<a href="' + etherscanAddressURL  + contract.address + '" target="_blank">Contract deployed</a>';
+        document.getElementById('deploy').innerHTML = link;
+      } else {
+        const link = '<a href="' + etherscanTxURL + contract.transactionHash + '" target="_blank">Transaction successful</a>';
+        document.getElementById('deploy').innerHTML = link;
+      }
     }
   });
 }
@@ -206,9 +279,9 @@ const MyContract = web3.eth.contract(abi).at(contractAddress);
 
 let distance, previous;
 const x = setInterval(() => {
-  MyContract.secondsRemaining((err, result) => {
-    if (err) {
-      document.getElementById("sync").innerHTML = 'Get remaining time failed' + err;
+  MyContract.secondsRemaining((error, result) => {
+    if (error) {
+      document.getElementById("sync").innerHTML = 'Get remaining time failed' + error;
     } else {
       const current = parseInt(result.toString());
       if(previous !== current) {
