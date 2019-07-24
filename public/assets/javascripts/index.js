@@ -62,6 +62,7 @@ function setListeners() {
   document.getElementById("cd-contract").addEventListener("click", cdContract);
   document.getElementById("deploy-contract").addEventListener("click", deployContract);
   document.getElementById("generate-number").addEventListener("click", generateRandomNumber);
+  document.getElementById("get-number").addEventListener("click", getRandomNumber);
 }
 
 // -----------------------------
@@ -359,6 +360,7 @@ function waitForReceipt(txId) {
         clearInterval(wait);
         setTimeout(() => {
           getRandomNumber();
+          setRandomUnlock();
         }, 10000);
       } else {
         document.getElementById("number").innerHTML += "."; 
@@ -375,7 +377,6 @@ function getRandomNumber() {
     } else {
       document.getElementById("number").innerHTML = result;
     }
-    setRandomUnlock();
     document.getElementById('random').innerHTML = "";
   });
 }
@@ -387,5 +388,5 @@ function setRandomLock() {
 
 function setRandomUnlock() {
   document.getElementById("generate-number").disabled = false;
-  document.getElementById("generate-number").innerHTML = "Generate a Number";
+  document.getElementById("generate-number").innerHTML = "Generate New One";
 }
