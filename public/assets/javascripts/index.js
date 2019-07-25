@@ -312,7 +312,7 @@ function synchronizeTimer() {
 // -------------------------
 
 // Random number generator 
-const randomAddress = '0xabc98a6ead06fd3c0ebe0590b88e0a16f8d2dd6a';
+const randomAddress = '0x6bb4b0ac70f967e62ebf804d4d7036eafbfd3af7';
 const randomContract = web3.eth.contract(randomAbi).at(randomAddress);
 
 function generateRandomNumber() {
