@@ -29,7 +29,7 @@
         <li><a href="#" accesskey="2" title="">Read Contract</a></li>
         <li><a href="#" accesskey="3" title="">Write Contract</a></li>
         <li><a href="#" accesskey="4" title="">About Us</a></li>
-        <li><a href="#" id="user-login" title="Login with Metamask">Login (Metamask)</a></li>
+        <li><a href="login" id="user-login" title="Login with Metamask" target="_blank">Login (Metamask)</a></li>
       </ul>
     </div>
     <div id="three-column" class="container">

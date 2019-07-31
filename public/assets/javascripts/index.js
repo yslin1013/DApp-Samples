@@ -55,7 +55,6 @@ function loadInformations() {
 }
 
 function setListeners() {
-  document.getElementById("user-login").addEventListener("click", userLogin);
   document.getElementById("buy-tokens").addEventListener("click", buyTokens);
   document.getElementById("get-balance").addEventListener("click", getBalance);
   document.getElementById("donate-account").addEventListener("click", donateAccount);
@@ -63,70 +62,6 @@ function setListeners() {
   document.getElementById("deploy-contract").addEventListener("click", deployContract);
   document.getElementById("generate-number").addEventListener("click", generateRandomNumber);
   document.getElementById("get-number").addEventListener("click", getRandomNumber);
-}
-
-// -----------------------------
-
-const signature = Cookies.get(web3.eth.coinbase);
-const expiration = Math.floor(new Date().getTime() / (1000 * 60 * 60));
-const seedphrase = web3.sha3(web3.eth.coinbase + expiration);
-const message = web3.fromUtf8("Login with Metamask @" + web3.eth.coinbase);
-let bIsLogin = checkUserLogin(signature, message);
-
-function userLogin() {
-  if (checkUserLogout()) return;
-  if (!bIsLogin) {
-    web3.personal.sign(message, web3.eth.coinbase, seedphrase, (error, signature) => {
-      if(error) {
-        setUserLogin();
-        console.error(error);
-      }
-      else {
-        Cookies.set(web3.eth.coinbase, signature, { expires: 1 });
-        setUserLogout();
-        alert("Login successful");
-      }
-    });
-  }
-}
-
-function checkUserLogin(signature, message) {
-  if(signature !== undefined) {
-    web3.personal.ecRecover(message, signature, (error, address) => {
-      if (error) {
-        setUserLogin();
-        console.error(error);
-        return false;
-      } else {
-        if(address === web3.eth.coinbase) {
-          setUserLogout();
-          console.log(signature);
-          return true;
-        } else return false;
-      }
-    });
-  } else return false;
-}
-
-function checkUserLogout() {
-  let status = document.getElementById('user-login').innerHTML;
-  let title = document.getElementById('user-login').title;
-  if (status === "Logout (Metamask)" || title === "Logout with Metamask") {
-    setUserLogin();
-    alert("Logout successful");
-    return true;
-  } else return false;
-}
-
-function setUserLogin() {
-  Cookies.remove(web3.eth.coinbase);
-  document.getElementById('user-login').innerHTML = "Login (Metamask)";
-  document.getElementById('user-login').title = "Login with Metamask";
-}
-
-function setUserLogout() {
-  document.getElementById('user-login').innerHTML = "Logout (Metamask)";
-  document.getElementById('user-login').title = "Logout with Metamask";
 }
 
 function buyTokens() {

@@ -301,8 +301,8 @@ contract CustomizedToken is StandardToken, Ownable {
     /* Token that can be frozen (locked) */
     function freeze(uint256 _value) public returns (bool success) {
         require(_value > 0, "Frozen value <= 0");
-        freezes[msg.sender] = SafeMath.add(freezes[msg.sender], _value);
         balances[msg.sender] = SafeMath.sub(balances[msg.sender], _value);
+        freezes[msg.sender] = SafeMath.add(freezes[msg.sender], _value);
         emit Freeze(msg.sender, _value);
         return true;
     }
@@ -326,7 +326,7 @@ contract CustomizedToken is StandardToken, Ownable {
 
     function buyTokens() public payable returns (bool success) {
         uint256 _value = SafeMath.mul(msg.value, rate);
-        require(_value > 0, "Transferred tokens <= 0");
+        require(_value > 0, "Purchased tokens <= 0");
         balances[_owner] = SafeMath.sub(balances[_owner], _value);
         balances[msg.sender] = SafeMath.add(balances[msg.sender], _value);
         emit Transfer(_owner, msg.sender, _value);

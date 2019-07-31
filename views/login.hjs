@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <script src="assets/javascripts/js.cookie.min.js" type="text/javascript"></script>
+  <script src="assets/javascripts/login.js" type="text/javascript"></script>
+  <title>Login Panel</title>
+</head>
+
+<body class="w3-container w3-auto">
+<div class="w3-container">
+  <div id="res-panel" class="w3-panel w3-pale-blue w3-border w3-display-container w3-animate-left" style="display:none;">
+    <span id="res-cross" class="w3-button w3-large w3-display-topright">&times;</span>
+    <h3 id="res-title"></h3>
+    <p id="res-msg"></p>
+  </div>
+  <div class="w3-section">
+    <button id="login-open" class="w3-button w3-blue w3-large" style="display:none;">Login</button>
+    <button id="logout-open" class="w3-button w3-blue w3-large" style="display:none;">Logout</button>
+  </div>
+  <div id="login-panel" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:600px">
+      <div class="w3-center"><br>
+        <span id="login-cross" class="w3-button w3-xlarge w3-transparent w3-display-topright" title="Close Modal">×</span>
+        <img src="logo.png" alt="Logo" style="width:30%" class="w3-circle w3-margin-top">
+      </div>
+      <div class="w3-container">
+        <div class="w3-section">
+          <label><b>Username</b></label>
+          <input class="w3-input w3-border w3-margin-bottom" type="text" placeholder="Enter Username" id="usrname" required>
+          <label><b>Password</b></label>
+          <input class="w3-input w3-border" type="text" placeholder="Enter Password" id="psw" required>
+          <button id="login-user" class="w3-button w3-block w3-blue w3-section w3-padding">VIP Login</button>
+        </div>
+      </div>
+      <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+        <button id="login-cancel" class="w3-button w3-red">Cancel</button>
+        <span id="psw-msg" class="w3-right w3-padding w3-hide-small">Forgot <a href="#">password?</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+</html>
