@@ -153,7 +153,6 @@ function setCookieSession(account, signature) {
     if (!sessionStorage.sessionKey) {
       sessionStorage.sessionKey = signature;
     }
-    console.log('Cookie and session is set');
   } else {
     console.log('No Web Storage support');
   }
