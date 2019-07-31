@@ -50,7 +50,7 @@ function closeNotification() {
 // ---------------------
 
 const message = web3.fromUtf8('Login with Metamask @' + web3.eth.coinbase);
-const expiration = Math.floor(new Date().getTime() / (1000 * 60)); // 1 min
+const expiration = Math.floor(new Date().getTime() / (1000 * 60 * 60 * 24));
 const seedphrase = web3.sha3(web3.eth.coinbase + expiration);
 let cookieSig = Cookies.get(web3.eth.coinbase);
 let sessionKey = sessionStorage.sessionKey;
@@ -148,9 +148,7 @@ function checkCookieSession(account, signature) {
 }
 
 function setCookieSession(account, signature) {
-  Cookies.set(account, signature, {
-    expires: 1
-  }); // 1 day, path & domain
+  Cookies.set(account, signature, { expires: 1 }); // 1 day, path & domain
   if (typeof (Storage) !== 'undefined') {
     if (!sessionStorage.sessionKey) {
       sessionStorage.sessionKey = signature;
