@@ -50,10 +50,11 @@ function closeNotification() {
 // ---------------------
 
 const message = web3.fromUtf8('Login with Metamask @' + web3.eth.coinbase);
-const expiration = Math.floor(new Date().getTime() / (1000 * 60 * 60 * 24));
-const seedphrase = web3.sha3(web3.eth.coinbase + expiration);
+const seed = Math.floor(new Date().getTime() / (1000*60*60*24));
+const seedphrase = web3.sha3(web3.eth.coinbase + seed);
 let cookieSig = Cookies.get(web3.eth.coinbase);
 let sessionKey = sessionStorage.sessionKey;
+const expiration = 1;   // unit: day
 
 // triggered by window.onload
 function checkUserLogin() {
@@ -83,7 +84,7 @@ function loginUser() {
 function verifySignature(signature, message) {
   if (!signature || !message) return;
   web3.personal.ecRecover(message, signature, (error, address) => {
-    if (address === web3.eth.coinbase) {
+    if(address === web3.eth.coinbase) {
       setLoginStatus();
       return true;
     } else {
@@ -136,11 +137,11 @@ function setErrorStatus(error) {
 }
 
 function checkCookieSession(account, signature) {
-  if (typeof (Storage) !== 'undefined') {
+  if (typeof(Storage) !== 'undefined') {
     if (signature !== undefined && signature.toString().includes('0x')) {
       if (sessionKey && sessionKey === signature) return true;
       else return false;
-    }
+    } else return false;
   } else {
     console.log('No Web Storage support');
     return false;
@@ -148,8 +149,8 @@ function checkCookieSession(account, signature) {
 }
 
 function setCookieSession(account, signature) {
-  Cookies.set(account, signature, { expires: 1 }); // 1 day, path & domain
-  if (typeof (Storage) !== 'undefined') {
+  Cookies.set(account, signature, { expires: expiration });  // path & domain
+  if (typeof(Storage) !== 'undefined') {
     if (!sessionStorage.sessionKey) {
       sessionStorage.sessionKey = signature;
     }
