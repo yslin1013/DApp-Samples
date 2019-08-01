@@ -66,15 +66,17 @@ function sendNotification(type, title, msg) {
       nNewColor = 'w3-pale-red';
       break;
     default:
-      nNewColor = 'w3-pale-blue';
+      nNewColor = 'w3-pale-green';
       break;
   }
   let classAttr = document.querySelector('#res-panel').className;
   document.querySelector('#res-panel').className = classAttr.replace(nColor, nNewColor);
-  document.querySelector('#res-panel').style.display = 'block';
   document.querySelector('#res-title').innerHTML = title;
   document.querySelector('#res-msg').innerHTML = msg;
   nColor = nNewColor;
+  setTimeout(() => {
+    document.querySelector('#res-panel').style.display = 'block';
+  }, 500);
 }
 
 function openLogin() {
@@ -153,10 +155,10 @@ function createSignature(message, seedphrase) {
 }
 
 function setLoginStatus() {
+  loadUserProfile();
   document.querySelector('#login-open').style.display = 'none';
   document.querySelector('#login-panel').style.display = 'none';
   document.querySelector('#logout-open').style.display = 'block';
-  loadUserProfile();
 }
 
 function setLogoutStatus(event) {
@@ -234,6 +236,7 @@ function loadProductList() {
   const userAddress = sessionStorage.getItem('address');
   if (!userAddress || !userName) return;
   document.querySelector('#product-panel').style.display = 'block';
+  sendNotification('info', 'Purchase', 'Please purchase a product');
 }
 
 function purchaseProduct() {
@@ -259,12 +262,16 @@ function waitForReceipt(txId) {
         console.error(error);
       } else if (receipt) {
         clearInterval(wait);
-        alert("Tokens are received.");
+        console.log(receipt);
+        let classAttr = document.querySelector('#product-buy').className;
+        document.querySelector('#product-buy').className = classAttr.replace('w3-white', 'w3-khaki');
+        sendNotification('success', 'Success', 'Product purchase completed!');
       } else {}
     });
   }, 2000);
 }
 
+// Scan for account switching and balance changing
 let account = web3.eth.coinbase;
 const accountInterval = setInterval(() => {
   if (account === undefined) return;
@@ -272,4 +279,8 @@ const accountInterval = setInterval(() => {
     account = web3.eth.coinbase;
     location.reload();
   }
+  tokenContract.balanceOf(account, (error, result) => {
+    if (error) console.error(error);  
+    else document.querySelector('#user-balance').innerHTML = 'Token Balance = ' + parseInt(result);
+  });
 }, 1000);
