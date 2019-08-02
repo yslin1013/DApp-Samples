@@ -27,6 +27,8 @@ function initialize() {
   document.querySelector('#res-cross').addEventListener('click', closeNotification);
   document.querySelector('#product-list').addEventListener('click', loadProductList);
   document.querySelector('#product-buy').addEventListener('click', purchaseProduct);
+  document.querySelector('#buy-tokens').addEventListener('click', loadBuyTokens);
+  document.querySelector('#buy-btn').addEventListener('click', buyTokens);
 }
 
 function loadInformations() {
@@ -210,7 +212,7 @@ function setCookieSession(account, signature) {
 // --------------------------
 
 const ownerAddress = "0xEA72FC4d14Ecb42E6B5a8E94ac976216283a8833";
-const contractAddress = "0xD0D6c01Eb198AB5F343f355F2DcBd58df3Ae360E";
+const contractAddress = "0x01a8a77951d1ab32927ed0e36897495d92f613fc";
 const tokenContract = web3.eth.contract(contractAbi).at(contractAddress);
 
 function loadUserProfile() {
@@ -236,7 +238,14 @@ function loadProductList() {
   const userAddress = sessionStorage.getItem('address');
   if (!userAddress || !userName) return;
   document.querySelector('#product-panel').style.display = 'block';
+  document.querySelector('#buy-panel').style.display = 'none';
   sendNotification('info', 'Purchase', 'Please purchase a product');
+}
+
+function loadBuyTokens() {
+  document.querySelector("#buy-panel").style.display = 'block';
+  document.querySelector('#product-panel').style.display = 'none';
+  sendNotification('info', 'Buy Tokens', 'Please buy tokens');
 }
 
 function purchaseProduct() {
@@ -247,6 +256,7 @@ function purchaseProduct() {
   }, (error, transactionId) => {
     if (error) {
       console.error(error);
+      sendNotification('error', 'Warning', error.substr(0, error.indexOf('\n')));
     } else {
       console.log(transactionId);
       waitForReceipt(transactionId);
@@ -260,15 +270,48 @@ function waitForReceipt(txId) {
       if (error) {
         clearInterval(wait);
         console.error(error);
+        sendNotification('error', 'Warning', error.substr(0, error.indexOf('\n')));
       } else if (receipt) {
         clearInterval(wait);
         console.log(receipt);
-        let classAttr = document.querySelector('#product-buy').className;
-        document.querySelector('#product-buy').className = classAttr.replace('w3-white', 'w3-khaki');
-        sendNotification('success', 'Success', 'Product purchase completed!');
+        if (receipt.status === '0x0') {
+          sendNotification('error', 'Warning', 'Contract transaction failed');
+        } else {
+          let classAttr = document.querySelector('#product-buy').className;
+          document.querySelector('#product-buy').className = classAttr.replace('w3-white', 'w3-khaki');
+          sendNotification('success', 'Success', 'Product purchase completed!');
+        }
       } else {}
     });
   }, 2000);
+}
+
+function buyTokens() {
+  tokenContract.rate((error, result) => {
+    if (error) {
+      console.error(error);
+      sendNotification('error', 'Warning', error.substr(0, error.indexOf('\n')));
+    }
+    else {
+      const numOfTokens = document.getElementById('token-amount').value;
+      const rate = parseInt(result);
+      const cost = parseInt(numOfTokens) * rate;
+      tokenContract.buyTokens({
+        to: contractAddress,
+        value: cost,
+        gas: '80000',
+        gasPrice: '20000000000'
+      }, (error, transactionId) => {
+        if (error) {
+          console.error(error);
+          sendNotification('error', 'Warning', error.substr(0, error.indexOf('\n')));
+        } else {
+          console.log(transactionId);
+          sendNotification('success', 'Success', 'Buying tokens completed!');
+        }
+      });
+    }
+  });
 }
 
 // Scan for account switching and balance changing

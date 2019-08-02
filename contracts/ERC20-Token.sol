@@ -247,8 +247,7 @@ contract CustomizedToken is StandardToken, Ownable {
     string public name;
     string public symbol;
     uint8 public decimals;
-
-    uint256 rate = 1;
+    uint256 public rate = 100000000000000;
 
     constructor(
         uint256 _initialAmount,
@@ -325,7 +324,7 @@ contract CustomizedToken is StandardToken, Ownable {
     function() external payable {}
 
     function buyTokens() public payable returns (bool success) {
-        uint256 _value = SafeMath.mul(msg.value, rate);
+        uint256 _value = SafeMath.div(msg.value, rate);
         require(_value > 0, "Purchased tokens <= 0");
         balances[_owner] = SafeMath.sub(balances[_owner], _value);
         balances[msg.sender] = SafeMath.add(balances[msg.sender], _value);
