@@ -61,7 +61,7 @@ function prepareTransaction(dataText) {
         sendTransaction(rawTx, account.privateKey);
       } catch (error) {
         console.error(error);
-        alert(JSON.stringify(error));
+        alert(error.message);
       }
     }
     reader.onerror = function (evt) {
@@ -86,7 +86,7 @@ function sendTransaction(rawTx, key) {
     retrieveData();
   })
   .on('error', (error) => {
-    alert(JSON.stringify(error));
+    alert(error.message);
   });
 }
 
