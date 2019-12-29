@@ -65,9 +65,9 @@ function prepareTransaction(dataText) {
       }
     }
     reader.onerror = function (evt) {
-      alert("error reading file");
+      alert("Error reading file");
     }
-  }
+  } else alert("No keystore file or passphrase");
 }
 
 function sendTransaction(rawTx, key) {
