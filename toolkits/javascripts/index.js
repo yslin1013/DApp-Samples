@@ -29,7 +29,7 @@ async function parseData(QrCodeData) {
     }
     previousTimestamp = currentTimestamp;
     previousData = QrCodeData;
-  } else alert("The same input data as before. Please wait for " + scanRate/1000 + " seconds.");
+  }
 }
 
 function prepareTransaction(dataText) {
@@ -79,7 +79,7 @@ function sendTransaction(rawTx, key) {
   .on('transactionHash', (hash) => {
     console.log('Tx hash = ' + hash);
     const url = etherscanURL + '/tx/' + hash;
-    etherscan.innerHTML = "<a href='" + url + "' target='_blank'>CLICK HERE</a>";
+    etherscan.innerHTML = "<a href='" + url + "' target='_blank'>" + hash + "</a>";
   })
   .on('receipt', (receipt) => {
     console.log(receipt);
