@@ -4,7 +4,7 @@ let previousTimestamp, previousData;
 
 window.addEventListener('load', async () => {
   window.web3 = new Web3(new Web3.providers.HttpProvider(infuraURL));
-  printBlockchainInfo();
+  printBlockchainInfo();  
 });
 
 function printBlockchainInfo() {
@@ -44,7 +44,7 @@ function prepareTransaction(dataText) {
         const keystore = evt.target.result;
         const account = await web3.eth.accounts.decrypt(keystore, passphrase);
         const count = await web3.eth.getTransactionCount(account.address);
-        const dataTextToHex = web3.utils.fromAscii(dataText).replace('0x', '');
+        const dataTextToHex = web3.utils.utf8ToHex(dataText).replace('0x', '');
         let rawTx = {
           nonce: count,
           gasPrice: 6000000000,
@@ -52,7 +52,7 @@ function prepareTransaction(dataText) {
           to: contractAddress,
           value: '0x00',
           data: '0x93a09352' + zeroPadding('20', 64) + 
-                zeroPadding(dataText.length.toString(16), 64) + 
+                zeroPadding(dataTextToHex.length.toString(16), 64) + 
                 dataTextToHex
         };
         console.log('Raw Tx to be sent = ' + JSON.stringify(rawTx, null, 2));
