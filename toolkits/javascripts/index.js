@@ -29,7 +29,7 @@ async function parseData(QrCodeData) {
     }
     previousTimestamp = currentTimestamp;
     previousData = QrCodeData;
-  }
+  } else alert("The same input data as before. Please wait for " + scanRate/1000 + " seconds.");
 }
 
 function prepareTransaction(dataText) {
