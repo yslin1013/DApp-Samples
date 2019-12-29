@@ -3,9 +3,7 @@ let etherscan = document.getElementById('etherscan');
 let previousTimestamp, previousData;
 
 window.addEventListener('load', async () => {
-  if (window.ethereum) window.web3 = new Web3(ethereum);  
-  else if (window.web3) window.web3 = new Web3(web3.currentProvider);
-  else window.web3 = new Web3(new Web3.providers.HttpProvider(infuraURL));
+  window.web3 = new Web3(new Web3.providers.HttpProvider(infuraURL));
   printBlockchainInfo();
 });
 
@@ -63,7 +61,7 @@ function prepareTransaction(dataText) {
         sendTransaction(rawTx, account.privateKey);
       } catch (error) {
         console.error(error);
-        alert(error);
+        alert(JSON.stringify(error));
       }
     }
     reader.onerror = function (evt) {
@@ -88,7 +86,7 @@ function sendTransaction(rawTx, key) {
     retrieveData();
   })
   .on('error', (error) => {
-    alert(error);
+    alert(JSON.stringify(error));
   });
 }
 
